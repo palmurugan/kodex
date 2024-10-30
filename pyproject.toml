@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "kodex"
+version = "0.1.0"
+description = "Kodex is a code generator tool"
+authors = ["palmurugan.c <palmurugan.c@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+click = "^8.1.7"
+colorama = "^0.4.6"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+black = "^24.10.0"
+
+[tool.poetry.scripts]
+kodex = "kodex.cli.commands:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
