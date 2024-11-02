@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 
 
 @dataclass
@@ -17,10 +17,10 @@ class GeneratorContext:
         # Create full project path including project name
         self.project_dir = Path(self.output_dir) / self.project_name
         # Create the Java package path
-        self.package_dir = self.project_dir / "src" / "main" / "java" / \
-                           self.base_package.replace(".", "/")
+        self.package_dir = Path(self.project_dir / "src" / "main" / "java" / \
+                           self.base_package.replace(".", "/"))
         # Create resources directory path
-        self.resources_dir = self.project_dir / "src" / "main" / "resources"
+        self.resources_dir = Path(self.project_dir / "src" / "main" / "resources")
 
 
 class GeneratorHandler(ABC):
@@ -33,7 +33,7 @@ class GeneratorHandler(ABC):
         self._next_handler = handler
         return handler
 
-    def handle(self, context: GeneratorContext) -> bool | None:
+    def handle(self, context) -> bool | None:
         success = self.process(context)
 
         if success and self._next_handler:
@@ -42,5 +42,5 @@ class GeneratorHandler(ABC):
         return success
 
     @abstractmethod
-    def process(self, context: GeneratorContext) -> bool:
+    def process(self, context) -> bool:
         pass

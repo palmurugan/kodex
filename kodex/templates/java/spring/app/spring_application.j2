@@ -1,0 +1,59 @@
+package {{ base_package | default('com.example.application') }};
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+{%- if enable_scheduling | default(false) %}
+import org.springframework.scheduling.annotation.EnableScheduling;
+{%- endif %}
+{%- if enable_async | default(false) %}
+import org.springframework.scheduling.annotation.EnableAsync;
+{%- endif %}
+{%- if enable_caching | default(false) %}
+import org.springframework.cache.annotation.EnableCaching;
+{%- endif %}
+{%- if enable_security | default(false) %}
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+{%- endif %}
+{%- if include_banner | default(false) %}
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
+{%- endif %}
+
+@SpringBootApplication
+{%- if enable_scheduling | default(false) %}
+@EnableScheduling
+{%- endif %}
+{%- if enable_async | default(false) %}
+@EnableAsync
+{%- endif %}
+{%- if enable_caching | default(false) %}
+@EnableCaching
+{%- endif %}
+{%- if enable_security | default(false) %}
+@EnableWebSecurity
+{%- endif %}
+public class {{ application_name | default('Application') }} {
+    {%- if include_banner | default(false) %}
+
+    @Autowired
+    private Environment environment;
+    {%- endif %}
+
+    public static void main(String[] args) {
+        SpringApplication.run({{ application_name | default('Application') }}.class, args);
+    }
+
+    {%- if include_banner | default(false) %}
+
+    @Bean
+    public CommandLineRunner commandLineRunner() {
+        return args -> {
+            System.out.println("Application: {{ application_name | default('Application') }}");
+            System.out.println("Version: {{ version | default('1.0.0') }}");
+            System.out.println("Environment: " + environment.getActiveProfiles()[0]);
+        };
+    }
+    {%- endif %}
+}

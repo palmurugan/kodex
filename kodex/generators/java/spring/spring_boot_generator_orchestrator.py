@@ -18,9 +18,9 @@ class SpringBootGeneratorOrchestrator:
 
         self.chain_start = self.structure_generator
 
-    def generate(self, context: GeneratorContext) -> bool:
+    def generate(self, context) -> bool:
         """Orchestrator for generating the spring boot service"""
-        print("Generating project", context.project_name)
+        print("Generating project", context)
 
         success = self.chain_start.handle(context)
         if success:

@@ -3,7 +3,7 @@ from pathlib import Path
 import click
 from colorama import Fore
 
-from kodex.generators.java.spring.SpringBootGeneratorOrchestrator import SpringBootGeneratorOrchestrator
+from kodex.generators.java.spring.spring_boot_generator_orchestrator import SpringBootGeneratorOrchestrator
 from kodex.generators.java.spring.base_generator import GeneratorContext
 
 
@@ -40,11 +40,17 @@ def new(project_name: str,
     click.echo(f"Dependencies: {', '.join(dependencies)}")
     click.echo(f"Output Directory: {output_dir}{Fore.RESET}")
 
-    context = GeneratorContext(project_name=project_name,
+    context1 = GeneratorContext(project_name=project_name,
                      base_package=package,
                      output_dir=Path(output_dir),
                      java_version=java_version,
                      dependencies=dependencies)
+    context = {
+        "project_name": project_name,
+        "base_package": package,
+        "output_dir": Path(output_dir),
+        "dependencies": dependencies
+    }
 
     orchestrator = SpringBootGeneratorOrchestrator()
     orchestrator.generate(context)
