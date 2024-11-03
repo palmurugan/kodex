@@ -3,13 +3,11 @@ from pathlib import Path
 
 from kodex.common.code_generator import CodeGenerator
 from kodex.generators.java.spring.base_generator import GeneratorHandler
+from kodex.utils.case_convertion_util import kebab_to_pascal_case
 
 # Define this at the top of your file or in a config file
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent  # Adjust based on your structure
 
-def kebab_to_pascal_case(s: str) -> str:
-    # Split the string by hyphens, capitalize each part, and join them together
-    return ''.join(word.capitalize() for word in s.split('-'))
 
 def _copy_gradle_wrapper(context):
     template_path = PROJECT_ROOT / "templates" / "java" / "spring" / "gradle_core"
@@ -26,7 +24,7 @@ def _generate_gradle_settings(context) -> None:
                            context["base_dir"], context)
 
 
-def _generate_spring_application(context) -> None:
+def _generate_main_class(context) -> None:
     CodeGenerator().render('java/spring/app/spring_application.j2', context['application_name'] + '.java',
                            context['package_dir'], context)
 
@@ -50,7 +48,7 @@ class ProjectStructureGenerator(GeneratorHandler):
                                      context["base_package"].replace(".", "/")
             context["resource_dir"] = context["output_dir"] / context["project_name"] / "src" / "main" / "resources"
 
-            context['application_name'] = kebab_to_pascal_case(context["project_name"])+"Application"
+            context['application_name'] = kebab_to_pascal_case(context["project_name"]) + "Application"
 
             # Copy gradle_core wrapper files
             _copy_gradle_wrapper(context)
@@ -61,27 +59,10 @@ class ProjectStructureGenerator(GeneratorHandler):
             # Generating settings.gradle_core
             _generate_gradle_settings(context)
 
-            _generate_spring_application(context)
-
-            # Generate application.properties
-            self._generate_application_properties(context)
-
-            # Generate main application class
-            self._generate_main_class(context)
+            # Generating the SpringApplication Main Class
+            _generate_main_class(context)
 
             return True
         except Exception as e:
             print(f"Error generating project structure: {str(e)}")
             return False
-
-    def _generate_pom_xml(self, context) -> None:
-        # Implementation remains the same
-        pass
-
-    def _generate_application_properties(self, context) -> None:
-        # Implementation remains the same
-        pass
-
-    def _generate_main_class(self, context) -> None:
-        # Implementation remains the same
-        pass
